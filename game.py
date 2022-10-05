@@ -1,0 +1,40 @@
+import re
+
+
+class Game:
+
+    def __init__(self):
+        self.table = [['0' for _ in range(5)] for _ in range(5)]
+
+    def draw(self):
+        for raw in self.table:
+            print(*raw, sep=' | ', end='\n')
+
+    def input(self):
+        valid = False
+        while not valid:
+            char, i, j = input("Введите букву, ряд и столбец: ").split()
+            if len(char) == 1 and re.search(r'[а-яА-Я]', char):
+                if self.table[int(i)][int(j)].isalpha():
+                    print("Данная клетка занята.", end=' ')
+                else:
+                    valid = True
+            else:
+                print('Неверный ввод.', end=' ')
+        self.table[int(i)][int(j)] = char.upper()
+
+    @staticmethod
+    def game_over_check(table):
+        for raw in table:
+            for square in raw:
+                if not square.isalpha():
+                    return False
+        return True
+
+    def play(self):
+        while True:
+            self.draw()
+            self.input()
+            if self.game_over_check(self.table):
+                break
+

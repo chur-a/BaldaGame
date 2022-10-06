@@ -1,9 +1,10 @@
 import game
-from vocabulary import words
+from vocabulary import Vocabulary
 
 instance = game.Game()
 instance.play()
 
-print(len(words))
+inst = Vocabulary()
+print(inst.find_word(r'(ко[А-Яа-я]ка)$', 5))
 
 

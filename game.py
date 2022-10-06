@@ -1,5 +1,7 @@
 import re
 
+from vocabulary import Vocabulary
+
 
 class Game:
 
@@ -31,7 +33,12 @@ class Game:
                     return False
         return True
 
+    def start(self):
+        word = Vocabulary.find_word(r'[а-яА-Я]{5}$', 5)
+        self.table[2] = list(word.upper())
+
     def play(self):
+        self.start()
         while True:
             self.draw()
             self.input()

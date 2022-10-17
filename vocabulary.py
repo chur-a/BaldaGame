@@ -19,13 +19,19 @@ class CreateVoc:
 class Vocabulary(CreateVoc):
 
     Words = CreateVoc.create(dict())
+    BlackList = set()
 
     @classmethod
     def find_word(cls, pattern: str, length: int):
+        pattern = pattern.lower()
         for word in cls.Words[length]:
             result = re.match(pattern, word)
-            if result:
+            if result and result.string not in cls.BlackList:
                 return result.string
+
+    @classmethod
+    def add_black_list(cls, word: str):
+        cls.BlackList.add(word.lower())
 
     def ret(self):
         return self.Words

@@ -1,7 +1,8 @@
 import re
+from abc import ABC
 
 
-class CreateVoc:
+class CreateVoc(ABC):
 
     @staticmethod
     def create(vocabulary: dict):

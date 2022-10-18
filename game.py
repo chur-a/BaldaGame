@@ -1,18 +1,16 @@
 import re
+from typing import List
 
 from vocabulary import Vocabulary
 
 
-class Game:
+class GameEngine:
 
     def __init__(self):
         self.table = [['0' for _ in range(5)] for _ in range(5)]
         self.player_score = 0
-
-    def draw(self):
-        for raw in self.table:
-            print(*raw, sep=' | ', end='\n')
-        print('Ваш счёт: ', self.player_score)
+        self.computer_score = 0
+        self.sqr_for_computer: List[tuple] = [(i, x) for x in range(5) for i in [1, 3]]
 
     def input(self):
         valid = False
@@ -28,6 +26,10 @@ class Game:
         self.table[int(i)][int(j)] = char.upper()
         return int(i), int(j)
 
+    def start(self):
+        word = Vocabulary.find_word(r'[а-яА-Я]{5}$', 5)
+        self.table[2] = list(word.upper())
+
     @staticmethod
     def game_over_check(table):
         for raw in table:
@@ -36,9 +38,10 @@ class Game:
                     return False
         return True
 
-    def start(self):
-        word = Vocabulary.find_word(r'[а-яА-Я]{5}$', 5)
-        self.table[2] = list(word.upper())
+    def draw_table(self):
+        for raw in self.table:
+            print(*raw, sep=' | ', end='\n')
+        print('Ваш счёт: ', self.player_score)
 
     def highlight_word(self, player_i: int, player_j: int):
         while True:
@@ -59,19 +62,28 @@ class Game:
             else:
                 print("Ошибка.")
 
+    def check_word(self, player_word, player_i, player_j):
+        if Vocabulary.find_word(player_word, len(player_word)):
+            Vocabulary.add_black_list(player_word)
+            return True
+        else:
+            self.table[player_i][player_j] = '0'
+            return False
+
+
+class PlayGame(GameEngine):
+
     def play(self):
         self.start()
         while True:
             while True:
-                self.draw()
+                self.draw_table()
                 player_i, player_j = self.input()
                 player_word = self.highlight_word(player_i, player_j)
-                if Vocabulary.find_word(player_word, len(player_word)):
-                    self.player_score += len(player_word)
-                    Vocabulary.add_black_list(player_word)
-                    break
-                else:
-                    self.table[player_i][player_j] = '0'
+                if not self.check_word(player_word, player_i, player_j):
                     print("Такого слова не существует или оно уже использовано.")
+                else:
+                    self.player_score += len(player_word)
+                    break
             if self.game_over_check(self.table):
                 break

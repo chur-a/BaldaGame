@@ -42,6 +42,7 @@ class GameEngine:
         for raw in self.table:
             print(*raw, sep=' | ', end='\n')
         print('Ваш счёт: ', self.player_score)
+        print('Счёт компьютера: ', self.computer_score)
 
     def highlight_word(self, player_i: int, player_j: int):
         while True:
@@ -62,28 +63,10 @@ class GameEngine:
             else:
                 print("Ошибка.")
 
-    def check_word(self, player_word, player_i, player_j):
+    @staticmethod
+    def check_word(player_word):
         if Vocabulary.find_word(player_word, len(player_word)):
             Vocabulary.add_black_list(player_word)
             return True
         else:
-            self.table[player_i][player_j] = '0'
             return False
-
-
-class PlayGame(GameEngine):
-
-    def play(self):
-        self.start()
-        while True:
-            while True:
-                self.draw_table()
-                player_i, player_j = self.input()
-                player_word = self.highlight_word(player_i, player_j)
-                if not self.check_word(player_word, player_i, player_j):
-                    print("Такого слова не существует или оно уже использовано.")
-                else:
-                    self.player_score += len(player_word)
-                    break
-            if self.game_over_check(self.table):
-                break
